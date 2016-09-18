@@ -1,0 +1,10 @@
+#ifndef __HIT_DATATYPES_LINUX_X86_HPP__
+#define __HIT_DATATYPES_LINUX_X86_HPP__
+
+typedef void*	HIT_LIBRARY_HANDLE;
+typedef int		HIT_FILE_HANDLE;
+
+const int HIT_INVALID_FILE_HANDLE = -1;
+
+#endif // __HIT_DATATYPES_LINUX_X86_HPP__
+
