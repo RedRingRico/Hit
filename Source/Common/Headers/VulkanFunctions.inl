@@ -1,0 +1,8 @@
+#ifndef VK_EXPORTED_FUNCTION
+#define VK_EXPORTED_FUNCTION( p_Function )
+#endif // VK_EXPORTED_FUNCTION
+
+VK_EXPORTED_FUNCTION( vkGetInstanceProcAddr )
+
+#undef VK_EXPORTED_FUNCTION
+

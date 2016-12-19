@@ -62,6 +62,7 @@ CXXFLAGS	=	-c -m$(BITSIZE) -DHIT_BUILD_$(BUILD_DEF) \
 				-DHIT_PLATFORM_$(BUILD_PLATFORM)_$(BUILD_ARCH) \
 				-DHIT_PLATFORM_$(BUILD_PLATFORM)_$(BUILD_ARCH)_$(BITSIZE) \
 				-DHIT_BITSIZE_$(BITSIZE) -DHIT_ARCH_$(BUILD_ARCH) \
+				-DVK_NO_PROTOTYPES \
 				-I$(TOPSRC)/$(PLATFORM)/Headers -I$(TOPSRC)/Common/Headers \
 				-I$(TOPSRC)/Libs/hashlib2plus/Source \
 				-I$(TOPSRC)/Libs/rapidjson/include
@@ -69,7 +70,7 @@ SYSIPATH	=
 INCPATH		=
 SYSLPATH	=	
 LIBPATH		=
-SYSLIBS		=	-lrt -pthread -lxcb -lxcb-randr -lxcb-xfixes
+SYSLIBS		=	-lrt -pthread -lxcb -lxcb-randr -lxcb-xfixes -ldl
 LINKFLAGS	=
 
 ##### Debug #######

@@ -4,6 +4,7 @@
 #include <DataTypes.hpp>
 #include <GameWindow.hpp>
 #include <InputDeviceManager.hpp>
+#include <Renderer.hpp>
 
 namespace Hit
 {
@@ -25,6 +26,7 @@ namespace Hit
 		HIT_UINT32 PlatformInitialise( );
 
 		GameWindow			*m_pGameWindow;
+		Renderer			m_Renderer;
 		InputDeviceManager	m_InputDeviceManager;
 	};
 }

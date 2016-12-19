@@ -3,6 +3,7 @@
 #include <vector>
 #include <Input/Gamepad.hpp>
 #include <cstring>
+#include <Renderer.hpp>
 
 namespace Hit
 {
@@ -69,6 +70,13 @@ namespace Hit
 		if( m_pGameWindow->Create( WindowParameters ) != GameWindow::OK )
 		{
 			std::cout << "Failed to create window" << std::endl;
+
+			return FATALERROR;
+		}
+
+		if( m_Renderer.Initialise( ) != Renderer::OK )
+		{
+			std::cout << "Failed to initialise the renderer" << std::endl;
 
 			return FATALERROR;
 		}
