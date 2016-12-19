@@ -7,10 +7,11 @@ namespace Hit
 {
 	struct WINDOW_PARAMETERS
 	{
-		HIT_SINT32	m_X;
-		HIT_SINT32	m_Y;
-		HIT_UINT32	m_Width;
-		HIT_UINT32	m_Height;
+		HIT_SINT32	X;
+		HIT_SINT32	Y;
+		HIT_UINT32	Width;
+		HIT_UINT32	Height;
+		HIT_BOOL	Fullscreen;
 	};
 
 	class GameWindow

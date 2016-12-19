@@ -40,6 +40,10 @@ namespace Hit
 			NAME_MAX + 1 );
 
 		char NotifyBuffer[ BufferLength ] __attribute( ( aligned( 8 ) ) );
+		struct timespec SleepTime;
+		SleepTime.tv_sec = 0;
+		// 1ms sleep
+		SleepTime.tv_nsec = 1000000;
 
 		for( ; ; )
 		{
@@ -71,6 +75,8 @@ namespace Hit
 					p += sizeof( struct inotify_event ) + pEvent->len;
 				}
 			}
+
+			nanosleep( &SleepTime, nullptr );
 		}
 	}
 

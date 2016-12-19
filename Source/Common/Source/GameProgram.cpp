@@ -55,6 +55,16 @@ namespace Hit
 		}
 
 		WINDOW_PARAMETERS WindowParameters;
+		WindowParameters.X = 0;
+		WindowParameters.Y = 0;
+		WindowParameters.Width = 640;
+		WindowParameters.Height = 480;
+		// Enable fullscreen only for the Jetson
+#if defined ( HIT_ARCH_AARCH64 )
+		WindowParameters.Fullscreen = HIT_TRUE;
+#else
+		WindowParameters.Fullscreen = HIT_FALSE;
+#endif // HIT_ARCH_AARCH64
 
 		if( m_pGameWindow->Create( WindowParameters ) != GameWindow::OK )
 		{
