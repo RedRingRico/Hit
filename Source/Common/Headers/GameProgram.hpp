@@ -3,6 +3,7 @@
 
 #include <DataTypes.hpp>
 #include <GameWindow.hpp>
+#include <InputDeviceManager.hpp>
 
 namespace Hit
 {
@@ -23,7 +24,8 @@ namespace Hit
 	private:
 		HIT_UINT32 PlatformInitialise( );
 
-		GameWindow	*m_pGameWindow;
+		GameWindow			*m_pGameWindow;
+		InputDeviceManager	m_InputDeviceManager;
 	};
 }
 

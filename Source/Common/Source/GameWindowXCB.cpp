@@ -52,7 +52,7 @@ namespace Hit
 
 		// Create a window which will be destroyed to get a fullscreen one
 		xcb_create_window( m_pXCBConnection, XCB_COPY_FROM_PARENT,
-			m_XCBWindow, pXCBScreen->root, 0, 0, 10, 10, 0,
+			m_XCBWindow, pXCBScreen->root, 0, 0, 1280, 720, 0,
 			XCB_WINDOW_CLASS_INPUT_OUTPUT, pXCBScreen->root_visual,
 			XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK, XCBValues );
 
@@ -133,7 +133,7 @@ namespace Hit
 
 		free( pCRTCResourceReply );
 
-		xcb_destroy_window( m_pXCBConnection, m_XCBWindow );
+		/*xcb_destroy_window( m_pXCBConnection, m_XCBWindow );
 
 		// Recreate the window with the primary screen information
 		xcb_create_window( m_pXCBConnection, XCB_COPY_FROM_PARENT,
@@ -154,7 +154,7 @@ namespace Hit
 			&( *pFullscreenReply ).atom );
 
 		free( pFullscreenReply );
-		free( pStateReply );
+		free( pStateReply );*/
 
 		xcb_map_window( m_pXCBConnection, m_XCBWindow );
 		xcb_flush( m_pXCBConnection );
@@ -173,6 +173,7 @@ namespace Hit
 			xcb_unmap_window( m_pXCBConnection, m_XCBWindow );
 			xcb_destroy_window( m_pXCBConnection, m_XCBWindow );
 			xcb_disconnect( m_pXCBConnection );
+			m_pXCBConnection = nullptr;
 		}
 
 		m_Open = HIT_FALSE;
@@ -188,8 +189,6 @@ namespace Hit
 			{
 				case XCB_KEY_PRESS:
 				{
-					m_Open = HIT_FALSE;
-
 					break;
 				}
 			}

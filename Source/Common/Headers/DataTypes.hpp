@@ -17,6 +17,8 @@ typedef size_t	HIT_BOOL;
 typedef float	HIT_FLOAT32;
 typedef double	HIT_FLOAT64;
 
+typedef size_t	HIT_MEMSIZE;
+
 const HIT_BOOL HIT_TRUE		= 1;
 const HIT_BOOL HIT_FALSE	= 0;
 
