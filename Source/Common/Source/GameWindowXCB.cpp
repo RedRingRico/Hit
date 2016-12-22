@@ -3,17 +3,48 @@
 #include <xcb/xproto.h>
 #include <xcb/randr.h>
 #include <xcb/xfixes.h>
+#include <Renderer.hpp>
 
 namespace Hit
 {
+	GameWindowDataXCB::GameWindowDataXCB( xcb_connection_t *p_pXCBConnection,
+		xcb_window_t p_XCBWindow ) :
+		m_pXCBConnection( p_pXCBConnection ),
+		m_XCBWindow( p_XCBWindow )
+	{
+		m_Type = GAME_WINDOW_DATA_TYPE_XCB;
+	}
+
+	GameWindowDataXCB::~GameWindowDataXCB( )
+	{
+	}
+
+	xcb_connection_t *GameWindowDataXCB::GetConnection( ) const
+	{
+		return m_pXCBConnection;
+	}
+
+	xcb_window_t GameWindowDataXCB::GetWindow( ) const
+	{
+		return m_XCBWindow;
+	}
+
 	GameWindowXCB::GameWindowXCB( ) :
 		m_pXCBConnection( nullptr )
 	{
+		m_X = 0;
+		m_Y = 0;
+		m_Width = 640;
+		m_Height = 480;
 		m_Open = HIT_FALSE;
+		m_pGameWindowData = nullptr;
+		m_Resize = HIT_FALSE;
+		m_pRenderer = nullptr;
 	}
 
 	GameWindowXCB::~GameWindowXCB( )
 	{
+		this->Destroy( );
 	}
 
 	HIT_UINT32 GameWindowXCB::Create(
@@ -92,13 +123,17 @@ namespace Hit
 				XCB_EVENT_MASK_STRUCTURE_NOTIFY
 		};
 
+		m_X = p_WindowParameters.X;
+		m_Y = p_WindowParameters.Y;
+		m_Width = p_WindowParameters.Width;
+		m_Height = p_WindowParameters.Height;
+
 		m_XCBWindow = xcb_generate_id( m_pXCBConnection );
 
 		// Create a window which will be destroyed to get a fullscreen one
 		xcb_create_window( m_pXCBConnection, XCB_COPY_FROM_PARENT,
 			m_XCBWindow, pXCBScreen->root,
-			p_WindowParameters.X, p_WindowParameters.Y,
-			p_WindowParameters.Width, p_WindowParameters.Height, 0,
+			m_X, m_Y, m_Width, m_Height, 0,
 			XCB_WINDOW_CLASS_INPUT_OUTPUT, pXCBScreen->root_visual,
 			XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK, XCBValues );
 
@@ -222,11 +257,25 @@ namespace Hit
 		xcb_xfixes_hide_cursor( m_pXCBConnection, m_XCBWindow );
 		m_Open = HIT_TRUE;
 
+		if( m_pGameWindowData )
+		{
+			delete m_pGameWindowData;
+		}
+
+		m_pGameWindowData = new GameWindowDataXCB( m_pXCBConnection,
+			m_XCBWindow );
+
 		return OK;
 	}
 
 	void GameWindowXCB::Destroy( )
 	{
+		if( m_pGameWindowData )
+		{
+			delete m_pGameWindowData;
+			m_pGameWindowData = nullptr;
+		}
+
 		if( m_pXCBConnection )
 		{
 			xcb_xfixes_show_cursor( m_pXCBConnection, m_XCBWindow );
@@ -247,10 +296,37 @@ namespace Hit
 		{
 			switch( pEvent->response_type & 0x7F )
 			{
+				case XCB_CONFIGURE_NOTIFY:
+				{
+					xcb_configure_notify_event_t *pConfigureEvent =
+						reinterpret_cast< xcb_configure_notify_event_t * >(
+							pEvent );
+					if( ( ( pConfigureEvent->width > 0 ) &&
+							( m_Width != pConfigureEvent->width ) ) ||
+						( ( pConfigureEvent->height > 0 ) &&
+							( m_Height != pConfigureEvent->height ) ) )
+					{
+						m_Width = pConfigureEvent->width;
+						m_Height = pConfigureEvent->height;
+						m_Resize = HIT_TRUE;
+					}
+
+					break;
+				}
 				case XCB_KEY_PRESS:
 				{
 					break;
 				}
+			}
+		}
+
+		if( m_Resize == HIT_TRUE )
+		{
+			m_Resize = HIT_FALSE;
+
+			if( m_pRenderer != nullptr )
+			{
+				m_pRenderer->OnGameWindowResized( );
 			}
 		}
 	}

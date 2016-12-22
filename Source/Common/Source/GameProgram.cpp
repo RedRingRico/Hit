@@ -74,9 +74,24 @@ namespace Hit
 			return FATALERROR;
 		}
 
-		if( m_Renderer.Initialise( ) != Renderer::OK )
+		if( m_Renderer.Initialise( m_pGameWindow ) != Renderer::OK )
 		{
 			std::cout << "Failed to initialise the renderer" << std::endl;
+
+			return FATALERROR;
+		}
+
+		if( m_Renderer.CreateSwapchain( ) != Renderer::OK )
+		{
+			std::cout << "Failed to set up the renderer's swapchain" <<
+				std::endl;
+
+			return FATALERROR;
+		}
+
+		if( m_Renderer.CreateCommandBuffers( ) != Renderer::OK )
+		{
+			std::cout << "Failed to create the command buffers" << std::endl;
 
 			return FATALERROR;
 		}
@@ -119,6 +134,11 @@ namespace Hit
 				}
 
 				g_Gamepads[ Gamepad ]->GetState( &OldGamepadState );
+			}
+
+			if( m_Renderer.CanRender( ) == HIT_TRUE )
+			{
+				m_Renderer.Render( );
 			}
 		}
 

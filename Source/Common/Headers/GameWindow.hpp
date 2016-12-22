@@ -14,6 +14,25 @@ namespace Hit
 		HIT_BOOL	Fullscreen;
 	};
 
+	enum GAME_WINDOW_DATA_TYPE
+	{
+		GAME_WINDOW_DATA_TYPE_XCB,
+		GAME_WINDOW_DATA_TYPE_UNKNOWN
+	};
+
+	class GameWindowData
+	{
+	public:
+		virtual ~GameWindowData( );
+
+		GAME_WINDOW_DATA_TYPE GetType( ) const;
+
+	protected:
+		GAME_WINDOW_DATA_TYPE	m_Type;
+	};
+
+	class Renderer;
+
 	class GameWindow
 	{
 	public:
@@ -24,6 +43,10 @@ namespace Hit
 		virtual void Destroy( ) = 0;
 
 		virtual void ProcessEvents( ) = 0;
+
+		GameWindowData *GetGameWindowData( );
+
+		void SetRenderer( Renderer *p_pRenderer );
 
 		HIT_BOOL IsOpen( ) const;
 
@@ -38,6 +61,10 @@ namespace Hit
 		HIT_UINT32	m_Height;
 
 		HIT_BOOL	m_Open;
+		HIT_BOOL	m_Resize;
+
+		GameWindowData				*m_pGameWindowData;
+		Renderer					*m_pRenderer;
 	};
 }
 

@@ -6,6 +6,21 @@
 
 namespace Hit
 {
+	class GameWindowDataXCB : public GameWindowData
+	{
+	public:
+		GameWindowDataXCB( xcb_connection_t *p_pXCBConnection,
+			xcb_window_t m_XCBWindow );
+		virtual ~GameWindowDataXCB( );
+
+		xcb_connection_t *GetConnection( ) const;
+		xcb_window_t GetWindow( ) const;
+
+	private:
+		xcb_connection_t	*m_pXCBConnection;
+		xcb_window_t		m_XCBWindow;
+	};
+
 	class GameWindowXCB : public GameWindow
 	{
 	public:
