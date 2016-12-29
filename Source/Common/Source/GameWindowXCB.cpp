@@ -30,7 +30,8 @@ namespace Hit
 	}
 
 	GameWindowXCB::GameWindowXCB( ) :
-		m_pXCBConnection( nullptr )
+		m_pXCBConnection( nullptr ),
+		m_pXCBDeleteReply( nullptr )
 	{
 		m_X = 0;
 		m_Y = 0;
@@ -265,11 +266,31 @@ namespace Hit
 		m_pGameWindowData = new GameWindowDataXCB( m_pXCBConnection,
 			m_XCBWindow );
 
+		xcb_intern_atom_cookie_t ProtocolsCookie = xcb_intern_atom(
+			m_pXCBConnection, 1, 12, "WM_PROTOCOLS" );
+		xcb_intern_atom_reply_t *pProtocolsReply = xcb_intern_atom_reply(
+			m_pXCBConnection, ProtocolsCookie, 0 );
+		xcb_intern_atom_cookie_t DeleteCookie = xcb_intern_atom(
+			m_pXCBConnection, 0, 16, "WM_DELETE_WINDOW" );
+		m_pXCBDeleteReply = xcb_intern_atom_reply( m_pXCBConnection,
+			DeleteCookie, 0 );
+
+		xcb_change_property( m_pXCBConnection, XCB_PROP_MODE_REPLACE,
+			m_XCBWindow, ( *pProtocolsReply ).atom, 4, 32, 1,
+			&( *m_pXCBDeleteReply ).atom );
+		free( pProtocolsReply );
+
 		return OK;
 	}
 
 	void GameWindowXCB::Destroy( )
 	{
+		if( m_pXCBDeleteReply )
+		{
+			free( m_pXCBDeleteReply );
+			m_pXCBDeleteReply = nullptr;
+		}
+
 		if( m_pGameWindowData )
 		{
 			delete m_pGameWindowData;
@@ -312,6 +333,19 @@ namespace Hit
 					}
 
 					break;
+				}
+				case XCB_CLIENT_MESSAGE:
+				{
+					if( ( *( xcb_client_message_event_t * )
+						pEvent ).data.data32[ 0 ] ==
+						( *m_pXCBDeleteReply ).atom )
+					{
+						m_Open = HIT_FALSE;
+						free( m_pXCBDeleteReply );
+						m_pXCBDeleteReply = nullptr;
+
+						break;
+					}
 				}
 				case XCB_KEY_PRESS:
 				{

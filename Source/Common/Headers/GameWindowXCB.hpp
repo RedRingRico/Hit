@@ -37,8 +37,9 @@ namespace Hit
 		GameWindowXCB( const GameWindowXCB &p_Other );
 		GameWindowXCB &operator=( const GameWindowXCB &p_Other );
 
-		xcb_connection_t	*m_pXCBConnection;
-		xcb_window_t		m_XCBWindow;
+		xcb_connection_t		*m_pXCBConnection;
+		xcb_window_t			m_XCBWindow;
+		xcb_intern_atom_reply_t	*m_pXCBDeleteReply;
 	};
 };
 
